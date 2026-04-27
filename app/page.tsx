@@ -1,65 +1,88 @@
-import Image from "next/image";
+import { redirect } from "next/navigation";
+import { auth } from "@/auth";
+import { GitHubSignInButton } from "@/components/GitHubSignInButton";
+import Link from "next/link";
 
-export default function Home() {
+export default async function Home() {
+  const session = await auth();
+
+  if (session?.user) {
+    redirect(`/${session.user.login ?? session.user.name ?? "developer"}`);
+  }
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+    <main className="flex min-h-screen items-center justify-center p-6 bg-[radial-gradient(ellipse_at_top,var(--tw-gradient-stops))] from-primary/20 via-background to-background">
+      <div className="w-full max-w-xl overflow-hidden border border-border/50 bg-card/60 shadow-2xl dark:shadow-none backdrop-blur-xl">
+        <div className="p-8 pb-4 py-12">
+          <div className="mb-6 flex items-center justify-between">
+            <div className="flex h-8 w-8 items-center justify-center text-primary">
+              <svg
+                viewBox="0 0 2160 2160"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-full w-full"
+              >
+                <path
+                  d="M0.0439453 2160H0V2159.96L0.0439453 2160ZM2160 859.087L859.087 2160H0.508789L2160 0.508789V859.087ZM2160 2160H1000.51L2160 1000.51V2160ZM0 2019.09V1160.51L1160.51 0H2019.09L0 2019.09ZM0 1019.09V0H1019.09L0 1019.09Z"
+                  fill="currentColor"
+                />
+              </svg>
+            </div>
+            <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground opacity-50">
+              v1.0 — {new Date().getFullYear()}
+            </span>
+          </div>
+
+          <h1 className="text-xl font-bold tracking-tight">Development Lens</h1>
+          <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+            Visualize your annual commits and pull requests.
           </p>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+
+        <div className="px-8 py-8">
+          <GitHubSignInButton />
         </div>
-      </main>
-    </div>
+
+        <footer className="flex items-center justify-between border-t border-border/40 bg-muted/5 px-8 py-5 backdrop-blur-md">
+          <div className="flex items-center gap-2.5">
+            <div className="relative flex h-2 w-2">
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-40"></span>
+              <span className="relative inline-flex h-2 w-2 rounded-full bg-primary shadow-[0_0_8px_rgba(var(--primary),0.5)]"></span>
+            </div>
+            <span className="text-[.65em] font-semibold uppercase text-muted-foreground/50">
+              System Ready
+            </span>
+          </div>
+
+          <Link
+            href="https://www.aundevelopment.dev/"
+            target="_blank"
+            className="group flex items-center gap-2 text-[.65em] font-semibold uppercase text-muted-foreground/50 transition-all duration-700 hover:text-primary"
+          >
+            <span className="relative">
+              By Solomon François
+              <span className="absolute -bottom-1 left-0 h-px w-full origin-right scale-x-0 bg-primary/50 transition-transform duration-700 ease-out group-hover:origin-left group-hover:scale-x-100" />
+            </span>
+
+            <div className="overflow-hidden">
+              <svg
+                className="transform transition-all duration-700 ease-out group-hover:-translate-y-1 group-hover:translate-x-1 group-hover:text-primary"
+                width="11"
+                height="11"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="3"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <line x1="7" y1="17" x2="17" y2="7"></line>
+                <polyline points="7 7 17 7 17 17"></polyline>
+              </svg>
+            </div>
+          </Link>
+        </footer>
+      </div>
+    </main>
   );
 }
