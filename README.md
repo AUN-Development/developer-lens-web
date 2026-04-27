@@ -1,11 +1,6 @@
-<p align="center">
-  <span style="display: inline-flex; align-items: center; gap: 14px;">
-    <img src="./public/logo.png" alt="Developer Lens Logo" width="30" />
-    <span style="font-size: 34px; font-weight: 700;">
-      Developer Lens
-    </span>
-  </span>
-</p>
+<img src="./public/logo.png" alt="Developer Lens Logo" width="100" />
+
+# Developer Lens
 
 **A minimalistic GitHub activity yearbook for developers**
 
