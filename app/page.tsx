@@ -29,7 +29,7 @@ export default async function Home() {
               </svg>
             </div>
             <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground opacity-50">
-              v1.0 — {new Date().getFullYear()}
+              v1.0.0 — {new Date().getFullYear()}
             </span>
           </div>
 

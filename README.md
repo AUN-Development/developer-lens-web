@@ -64,7 +64,7 @@ It helps you understand:
 ### 1. Clone repository
 
 ```bash
-git clone https://github.com/your-username/developer-lens.git
+git clone https://github.com/FrancoisSolomon/developer-lens-web.git
 cd developer-lens
 ```
 
