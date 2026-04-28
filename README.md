@@ -47,9 +47,10 @@ Instead of focusing on raw stats, it highlights:
 - Next.js
 - TypeScript
 - Tailwind CSS
+- Shadcn UI
 - NextAuth
+- Github OAuth
 - GitHub REST API
-- Server Components and Route Handlers
 
 ## Demo
 
