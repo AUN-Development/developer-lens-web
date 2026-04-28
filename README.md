@@ -1,98 +1,52 @@
-<img src="./public/logo.png" alt="Developer Lens Logo" width="100" />
-
 # Developer Lens
 
 **A minimalistic GitHub activity yearbook for developers**
 
 Visualize your commits and pull requests as a clean, interactive yearly heatmap.
 
-Built with Next.js • TypeScript • Tailwind CSS • GitHub API • NextAuth
+## Overview
 
----
+Developer Lens turns your GitHub activity into a simple visual story of your year.
 
-## ✨ Overview
-
-Developer Lens transforms your GitHub activity into a visual timeline of your development journey.
-
-Instead of raw statistics, it focuses on:
+Instead of focusing on raw stats, it highlights:
 
 - consistency
 - activity patterns
 - meaningful daily contributions
 
----
+## Screenshots
 
-## 🚀 Features
+<img src="./public/screenshots/home.png" alt="Homepage of Developer Lens" width="100%" />
 
-- 🔐 GitHub OAuth authentication (NextAuth / Auth.js)
+<img src="./public/screenshots/dashboard.png" alt="User page with stats" width="100%" />
+
+<img src="./public/screenshots/filters.png" alt="Day details with commits and pull requests" width="100%" />
+
+
+## Features
+
+- 🔐 GitHub OAuth authentication with NextAuth
 - 📊 Interactive yearly contribution heatmap
-- 📅 Daily breakdown with commits and pull requests
-- 🧠 Smart filtering (commits / PRs / both)
-- 🧾 Detailed commit viewer per day
-- ⚡ Server-side GitHub data aggregation (`/api/github/activity`)
-- 📤 Export to image (PNG/JPG)
-- 📝 Social caption generator (LinkedIn / Instagram ready)
-- 🎯 Fully server-rendered dashboard (Next.js App Router)
+- 📅 Daily breakdown for commits and pull requests
+- 🧠 Smart filtering for commits, PRs, or both
+- 🧾 Detailed daily commit viewer
+- 🌗 Light/Dark Mode with built-in support from Shadcn UI.
+- ⚡ Server-side GitHub data aggregation via `/api/github/activity`
+- 🎯 Fully server-rendered dashboard with the App Router
 
----
+## Tech Stack
 
-## 🧠 Concept
-
-Developer Lens is designed as a developer yearbook.
-
-It helps you understand:
-
-- when you are most productive
-- how consistent your coding habits are
-- what your development rhythm looks like
-
----
-
-## 🛠 Tech Stack
-
-- Next.js (App Router)
+- Next.js
 - TypeScript
 - Tailwind CSS
-- NextAuth (Auth.js)
+- NextAuth
 - GitHub REST API
-- Server Components & Route Handlers
+- Server Components and Route Handlers
 
----
+## Demo
 
-## ⚙️ Installation
+Check out the live demo: [https://developer-lens-web.vercel.app](https://developer-lens-web.vercel.app)
 
-### 1. Clone repository
+## License
 
-```bash
-git clone https://github.com/FrancoisSolomon/developer-lens-web.git
-cd developer-lens
-```
-
-### 2. Install dependencies
-
-```bash
-npm install
-```
-
-### 3. Set up environment variables
-
-Create a `.env.local` file in the root of the project and add your GitHub OAuth credentials:
-
-```
-GITHUB_ID=your_github_id
-GITHUB_SECRET=your_github_secret
-```
-
-### 4. Run the development server
-
-```bash
-npm run dev
-```
-
-Visit [http://localhost:3000](http://localhost:3000) to see your application in action!
-
----
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the [MIT License](./LICENSE).
