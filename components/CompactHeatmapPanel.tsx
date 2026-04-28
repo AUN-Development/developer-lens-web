@@ -1,8 +1,8 @@
 "use client";
 
 import Image from "next/image";
-import { useMemo, useState } from "react";
-import { LogOut, GitCommit, GitPullRequest, Calendar, X, ExternalLink } from "lucide-react";
+import { useMemo, useRef, useState } from "react";
+import { LogOut, GitCommit, GitPullRequest, Calendar, X, ExternalLink, Share2, Copy } from "lucide-react";
 import { signOut } from "next-auth/react";
 
 import { ActivityHeatmap } from "@/components/ActivityHeatmap";
@@ -32,6 +32,15 @@ export function CompactHeatmapPanel({ snapshot }: { snapshot: GitHubActivitySnap
   const [filter, setFilter] = useState<ActivityFilter>("both");
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [dialogDate, setDialogDate] = useState<string | null>(null);
+  const heatmapRef = useRef<HTMLDivElement | null>(null);
+  const [copyingImage, setCopyingImage] = useState(false);
+  const [sharing, setSharing] = useState(false);
+
+  type ShareNavigator = {
+    canShare?: (data: { files?: File[] }) => boolean;
+    share?: (data: { files?: File[]; title?: string; text?: string; url?: string }) => Promise<void>;
+  };
+  const nav = (navigator as unknown) as ShareNavigator;
 
   const filteredDays = useMemo(() => {
     return snapshot.days.map((day) => ({
@@ -48,14 +57,14 @@ export function CompactHeatmapPanel({ snapshot }: { snapshot: GitHubActivitySnap
   const commitItems = (dialogDay?.items ?? []).filter((item) => item.kind === "commit");
 
   return (
-    <div className="w-full max-w-3xl border border-border bg-card p-4 shadow-2xl dark:shadow-none">
+    <div ref={heatmapRef} className="w-full max-w-3xl border border-border bg-card p-4 shadow-2xl dark:shadow-none">
       <div className="flex flex-col gap-8">
 
         <div className="flex items-center justify-between gap-3">
           <div className="flex items-center gap-4">
             <div className="relative">
               <Image
-                src={snapshot.profile.avatarUrl || "/logo.png"} 
+                src={snapshot.profile.avatarUrl || "/logo.png"}
                 alt={snapshot.profile.login}
                 width={56}
                 height={56}
@@ -68,14 +77,101 @@ export function CompactHeatmapPanel({ snapshot }: { snapshot: GitHubActivitySnap
             </div>
           </div>
 
-          <button
-            type="button"
-            onClick={() => signOut({ callbackUrl: "/" })}
-            className="group cursor-pointer inline-flex items-center gap-2 border border-border bg-muted/50 px-4 py-2 text-[10px] font-bold uppercase tracking-wider text-muted-foreground transition hover:bg-muted hover:text-foreground"
-          >
-            <LogOut className="h-3.5 w-3.5 transition-transform group-hover:-translate-x-0.5" />
-            <span className="hidden sm:inline">Log out</span>
-          </button>
+          <div className="inline-flex items-center gap-2">
+            <button
+              type="button"
+              onClick={async () => {
+                try {
+                  setSharing(true);
+                  const shareTitle = `${snapshot.profile.login} — ${snapshot.year} Activity`;
+                  const pageUrl = typeof window !== "undefined" ? window.location.href : undefined;
+
+                  let blob: Blob | null = null;
+                  try {
+                    const htmlToImage = await import("html-to-image");
+                    if (heatmapRef.current) {
+                      blob = await htmlToImage.toBlob(heatmapRef.current, { cacheBust: true });
+                    }
+                  } catch {
+                    blob = null;
+                  }
+
+                  if (nav.canShare && blob) {
+                    const file = new File([blob], "heatmap.png", { type: "image/png" });
+                    if (nav.canShare({ files: [file] })) {
+                      await nav.share?.({ files: [file], title: shareTitle, text: shareTitle });
+                      return;
+                    }
+                  }
+
+                  if (nav.share) {
+                    await nav.share({ title: shareTitle, text: shareTitle, url: pageUrl });
+                    return;
+                  }
+
+                  if (pageUrl && navigator.clipboard) {
+                    await navigator.clipboard.writeText(pageUrl);
+                  }
+                } finally {
+                  setSharing(false);
+                }
+              }}
+              disabled={sharing || copyingImage}
+              aria-busy={sharing}
+              aria-label="Share activity"
+              title={sharing ? "Sharing…" : "Share"}
+              className={`group cursor-pointer inline-flex items-center gap-2 border border-border bg-muted/50 px-3 py-2 text-[10px] font-bold uppercase tracking-wider text-muted-foreground transition ${sharing || copyingImage ? 'opacity-60 pointer-events-none' : 'hover:bg-muted hover:text-foreground'}`}
+            >
+              <Share2 className="h-3.5 w-3.5 transition-transform group-hover:-translate-x-0.5" />
+              <span className="hidden sm:inline">{sharing ? "Sharing…" : "Share"}</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={async () => {
+                if (!heatmapRef.current) return;
+                setCopyingImage(true);
+                try {
+                  const htmlToImage = await import("html-to-image");
+                  const blob: Blob | null = await htmlToImage.toBlob(heatmapRef.current, { cacheBust: true });
+                  if (!blob) return;
+
+                  const hasClipboardItem = typeof (window as unknown as Window & { ClipboardItem?: unknown }).ClipboardItem !== "undefined";
+                  if (navigator.clipboard && hasClipboardItem) {
+                    await navigator.clipboard.write([new ClipboardItem({ [blob.type]: blob })]);
+                  } else {
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement("a");
+                    a.href = url;
+                    a.download = `${snapshot.profile.login}-heatmap.png`;
+                    document.body.appendChild(a);
+                    a.click();
+                    a.remove();
+                    URL.revokeObjectURL(url);
+                  }
+                } finally {
+                  setTimeout(() => setCopyingImage(false), 800);
+                }
+              }}
+              disabled={copyingImage || sharing}
+              aria-busy={copyingImage}
+              aria-label="Copy activity image"
+              title={copyingImage ? "Copied" : "Copy image"}
+              className={`group cursor-pointer inline-flex items-center gap-2 border border-border bg-muted/50 px-3 py-2 text-[10px] font-bold uppercase tracking-wider text-muted-foreground transition ${copyingImage || sharing ? 'opacity-60 pointer-events-none' : 'hover:bg-muted hover:text-foreground'}`}
+            >
+              <Copy className="h-3.5 w-3.5 transition-transform group-hover:-translate-x-0.5" />
+              <span className="hidden sm:inline">{copyingImage ? "Copied" : "Copy image"}</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => signOut({ callbackUrl: "/" })}
+              className="group cursor-pointer inline-flex items-center gap-2 border border-border bg-muted/50 px-4 py-2 text-[10px] font-bold uppercase tracking-wider text-muted-foreground transition hover:bg-muted hover:text-foreground"
+            >
+              <LogOut className="h-3.5 w-3.5 transition-transform group-hover:-translate-x-0.5" />
+              <span className="hidden sm:inline">Log out</span>
+            </button>
+          </div>
         </div>
 
         <div className="flex justify-center">
@@ -86,8 +182,8 @@ export function CompactHeatmapPanel({ snapshot }: { snapshot: GitHubActivitySnap
                 type="button"
                 onClick={() => setFilter(option.value)}
                 className={`cursor-pointer px-4 py-1.5 text-[11px] font-bold transition-all duration-200 ${filter === option.value
-                    ? "bg-card text-foreground shadow-md ring-1 ring-white/10"
-                    : "text-muted-foreground/50 hover:text-foreground"
+                  ? "bg-card text-foreground shadow-md ring-1 ring-white/10"
+                  : "text-muted-foreground/50 hover:text-foreground"
                   }`}
               >
                 <span className="relative z-10">{option.label}</span>
@@ -97,19 +193,21 @@ export function CompactHeatmapPanel({ snapshot }: { snapshot: GitHubActivitySnap
         </div>
 
         <div className="flex flex-col items-center justify-center space-y-4">
-          <ActivityHeatmap
-            days={filteredDays}
-            filter={filter}
-            selectedDate={selectedDate}
-            onSelect={(day: ActivityDay) => setSelectedDate(day.date)}
-            canClickDay={(day: ActivityDay) =>
-              day.items.some((item) => item.kind === "commit")
-            }
-            onDayClick={(day: ActivityDay) => {
-              setSelectedDate(day.date);
-              setDialogDate(day.date);
-            }}
-          />
+          <div className="w-full">
+            <ActivityHeatmap
+              days={filteredDays}
+              filter={filter}
+              selectedDate={selectedDate}
+              onSelect={(day: ActivityDay) => setSelectedDate(day.date)}
+              canClickDay={(day: ActivityDay) =>
+                day.items.some((item) => item.kind === "commit")
+              }
+              onDayClick={(day: ActivityDay) => {
+                setSelectedDate(day.date);
+                setDialogDate(day.date);
+              }}
+            />
+          </div>
 
           <div className="inline-flex items-center gap-2 bg-black px-3 py-1.5 text-[10px] font-medium text-white shadow-lg dark:bg-zinc-800">
             <Calendar className="h-3 w-3 text-primary" />
