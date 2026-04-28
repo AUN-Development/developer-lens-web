@@ -16,12 +16,20 @@ Instead of focusing on raw stats, it highlights:
 
 ## Screenshots
 
-<img src="./public/screenshots/home.png" alt="Homepage of Developer Lens" width="100%" />
-
-<img src="./public/screenshots/dashboard.png" alt="User page with stats" width="100%" />
-
-<img src="./public/screenshots/filters.png" alt="Day details with commits and pull requests" width="100%" />
-
+<table>
+  <tr>
+    <td><img src="./public/screenshots/screenshot-1.png" width="100%"/></td>
+    <td><img src="./public/screenshots/screenshot-2.png" width="100%"/></td>
+  </tr>
+  <tr>
+    <td><img src="./public/screenshots/screenshot-3.png" width="100%"/></td>
+    <td><img src="./public/screenshots/screenshot-4.png" width="100%"/></td>
+  </tr>
+  <tr>
+    <td><img src="./public/screenshots/screenshot-5.png" width="100%"/></td>
+    <td><img src="./public/screenshots/screenshot-6.png" width="100%"/></td>
+  </tr>
+</table>
 
 ## Features
 
