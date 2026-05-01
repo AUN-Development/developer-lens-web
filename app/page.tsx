@@ -33,7 +33,7 @@ export default async function Home() {
             </span>
           </div>
 
-          <h1 className="text-xl font-bold tracking-tight">Development Lens</h1>
+          <h1 className="text-xl font-bold tracking-tight">Developer Lens</h1>
           <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
             Visualize your annual commits and pull requests.
           </p>
@@ -55,12 +55,12 @@ export default async function Home() {
           </div>
 
           <Link
-            href="https://github.com/FrancoisSolomon"
+            href="https://aundevelopment.dev"
             target="_blank"
             className="group flex items-center gap-2 text-[.65em] font-semibold uppercase text-muted-foreground/50 transition-all duration-700 hover:text-primary"
           >
             <span className="relative">
-              By Solomon François
+              By AUN Development
               <span className="absolute -bottom-1 left-0 h-px w-full origin-right scale-x-0 bg-primary/50 transition-transform duration-700 ease-out group-hover:origin-left group-hover:scale-x-100" />
             </span>
 

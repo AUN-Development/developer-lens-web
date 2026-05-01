@@ -19,15 +19,15 @@ export async function generateMetadata({
   const year = new Date().getFullYear();
 
   return {
-    title: `${username} | Development Lens`,
-    description: `Track ${username}'s GitHub activity in ${year}. View commits, pull requests, and development patterns on Development Lens.`,
+    title: `${username} | Developer Lens`,
+    description: `Track ${username}'s GitHub activity in ${year}. View commits, pull requests, and development patterns on Developer Lens.`,
     openGraph: {
-      title: `${username} | Development Lens`,
+      title: `${username} | Developer Lens`,
       description: `GitHub activity insights for ${username} in ${year}.`,
     },
     twitter: {
       card: "summary_large_image",
-      title: `${username} | Development Lens`,
+      title: `${username} | Developer Lens`,
       description: `GitHub activity insights for ${username} in ${year}.`,
     },
   };
