@@ -55,7 +55,7 @@ export default async function Home() {
           </div>
 
           <Link
-            href="https://aundevelopment.dev"
+            href="https://aundevelopment.dev/"
             target="_blank"
             className="group flex items-center gap-2 text-[.65em] font-semibold uppercase text-muted-foreground/50 transition-all duration-700 hover:text-primary"
           >
