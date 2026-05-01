@@ -10,7 +10,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Development Lens",
+  title: "Developer Lens",
   description: "Visualize your annual commits and pull requests.",
 };
 
